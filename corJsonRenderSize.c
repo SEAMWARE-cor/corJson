@@ -9,8 +9,8 @@
 //
 #include <stdio.h>                      // snprintf
 #include <string.h>                     // strlen
+#include <math.h>                       // fabs, isfinite
 
-#include "corBase/corFloatTrim.h"       // corFloatTrim
 #include "corJson/CorJson.h"                // CorJson struct
 #include "corJson/corJsonRenderSize.h"         // Own Interface
 
@@ -38,15 +38,34 @@ static int countIntSize(long long i)
 
 // -----------------------------------------------------------------------------
 //
-// countFloatSize -
+// countFloatSize - an upper bound of corFloatTrim's length, without printing the number
+//
+// The size only allocates the buffer the render writes into, so a bound is as good as the length - and
+// printing every float twice, here and again in the render, was 2 % of a query of entities with one
+// GeoProperty Point each (perf, 2026-11-19). corFloatTrim writes, for a finite d:
+//   |d| >= 1e21, or 0 < |d| < 5e-9:  %.17g at most - sign, 17 digits, '.', "e-308": 24
+//   otherwise:                       %.9f at most, trimmed - sign, the integer digits, '.', nine decimals
+//                                    (%.0f for a whole number: shorter)
+// and "null" for inf/NaN. The extra char is kept: %.9f may round 9.9999999996 up to "10.000000000".
 //
 static int countFloatSize(double d)
 {
-  char number[32];
+  if (!isfinite(d))
+    return 4;
 
-  corFloatTrim(number, d);
+  double a = fabs(d);
 
-  return strlen(number) + 1;  // Adding an extra char - in case of rounding problems
+  if ((a >= 1e21) || ((a < 0.000000005) && (d != 0)))
+    return 24 + 1;
+
+  int intDigits = 1;
+  while (a >= 10)
+  {
+    a /= 10;
+    ++intDigits;
+  }
+
+  return 1 + intDigits + 1 + 9 + 1;
 }
 
 
