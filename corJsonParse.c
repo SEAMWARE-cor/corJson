@@ -69,6 +69,9 @@
 #include <limits.h>                                // LLONG_MAX
 #include <math.h>                                  // isinf
 #include <locale.h>                                // newlocale, locale_t
+#if defined(__APPLE__)
+#include <xlocale.h>                               // strtod_l (macOS declares it here)
+#endif
 #include <pthread.h>                               // pthread_once
 #include <stdio.h>                                 // snprintf
 #include <stdlib.h>                                // malloc, free
