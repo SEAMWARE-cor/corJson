@@ -447,13 +447,11 @@ static void corJsonRender2(CorJson* corJsonP, RenderBuffer* rBufP, CorNode* node
       pushString(rBufP, "{ ");
 
       CorNode* nP = nodeP->value.head;
-      int     childNo = 0;  // childNo is for debugging only
 
       while (nP != NULL)
       {
         corJsonRender2(corJsonP, rBufP, nP, 0, false);  // Note that indent-level is 0
         nP = nP->next;
-        ++childNo;
       }
 
       pushString(rBufP, " }");
@@ -472,13 +470,11 @@ static void corJsonRender2(CorJson* corJsonP, RenderBuffer* rBufP, CorNode* node
         pushString(rBufP, corJsonP->nlString);
 
         CorNode* nP = nodeP->value.head;
-        int     childNo = 0;  // childNo is for debugging only
 
         while (nP != NULL)
         {
           corJsonRender2(corJsonP, rBufP, nP, indentLevel + 1, false);
           nP = nP->next;
-          ++childNo;
         }
         pushString(rBufP, corJsonP->nlString);
         pushString(rBufP, indent);
@@ -534,13 +530,11 @@ static void corJsonRender2(CorJson* corJsonP, RenderBuffer* rBufP, CorNode* node
       pushString(rBufP, "[ ");
 
       CorNode* nP = nodeP->value.head;
-      int     childNo = 0;  // childNo is for debugging only
 
       while (nP != NULL)
       {
         corJsonRender2(corJsonP, rBufP, nP, 0, true);  // Note that indent-level is 0
         nP = nP->next;
-        ++childNo;
       }
 
       pushString(rBufP, " ]");
@@ -559,13 +553,11 @@ static void corJsonRender2(CorJson* corJsonP, RenderBuffer* rBufP, CorNode* node
         pushString(rBufP, corJsonP->nlString);
 
         CorNode* nP      = nodeP->value.head;
-        int     childNo = 0;  // childNo is for debugging only
 
         while (nP != NULL)
         {
           corJsonRender2(corJsonP, rBufP, nP, indentLevel + 1, true);
           nP = nP->next;
-          ++childNo;
         }
 
         pushString(rBufP, corJsonP->nlString);
